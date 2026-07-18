@@ -5,7 +5,7 @@ import ProjectCard from '../../components/ProjectCard.astro';
 
 const allProjects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 
-const categoryOrder = ['RF & Wireless', 'Smart Home', 'Portable & Wearable', 'Game'] as const;
+const categoryOrder = ['RF & Wireless', 'Smart Home', 'Portable & Wearable'] as const;
 const grouped = categoryOrder
 	.map((category) => ({
 		category,
@@ -21,9 +21,8 @@ const grouped = categoryOrder
 	<div class="intro">
 		<h1>Projects</h1>
 		<p>
-			Everything here is custom-designed: PCBs, enclosures, and firmware, built from scratch and
-			mostly funded through a couple of JLCPCB sponsorships. Tap into any project for the full
-			hardware breakdown.
+			Everything here is custom-designed: PCBs, enclosures, and firmware, built from scratch. Tap
+			into any project for the full hardware breakdown.
 		</p>
 	</div>
 
