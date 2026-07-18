@@ -1,0 +1,86 @@
+---
+import Layout from './Layout.astro';
+import ProjectImage from '../components/ProjectImage.astro';
+
+interface Props {
+	title: string;
+	tagline: string;
+	description: string;
+	category: string;
+	status: 'Complete' | 'Upcoming';
+	heroImage?: string;
+	gallery?: string[];
+}
+
+const { title, tagline, description, category, status, heroImage, gallery = [] } = Astro.props;
+---
+
+<Layout title={`${title} — designedbykoda`} description={description} image={heroImage}>
+	<a class="back" href="/projects">&larr; All projects</a>
+
+	<div class="project-header">
+		<div class="tags">
+			<span class="tag">{category}</span>
+			{status === 'Upcoming' && <span class="tag status-upcoming">Upcoming</span>}
+		</div>
+		<h1>{title}</h1>
+		<p class="tagline">{tagline}</p>
+	</div>
+
+	<ProjectImage src={heroImage} alt={title} ratio="16 / 9" />
+
+	<article class="prose">
+		<slot />
+	</article>
+
+	{
+		gallery.length > 0 && (
+			<div class="gallery">
+				{gallery.map((src) => (
+					<ProjectImage src={src} alt={`${title} photo`} ratio="4 / 3" label="Photo coming soon" />
+				))}
+			</div>
+		)
+	}
+</Layout>
+
+<style>
+	.back {
+		display: inline-block;
+		color: var(--muted);
+		font-size: 0.9em;
+		margin-bottom: 1.5em;
+	}
+	.back:hover {
+		color: var(--fg);
+	}
+	.project-header {
+		margin-bottom: 1.5em;
+	}
+	.tags {
+		display: flex;
+		gap: 0.5em;
+		margin-bottom: 0.8em;
+	}
+	.tagline {
+		color: var(--muted);
+		font-size: 1.15em;
+		margin-top: 0.3em;
+	}
+	.prose {
+		margin-top: 2em;
+	}
+	.prose :global(h2) {
+		margin-top: 1.8em;
+		font-size: 1.3em;
+	}
+	.prose :global(h2:first-child) {
+		margin-top: 0;
+	}
+	.gallery {
+		margin-top: 2.5em;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+		gap: 1em;
+	}
+</style>

@@ -1,0 +1,66 @@
+---
+import ProjectImage from './ProjectImage.astro';
+
+interface Props {
+	slug: string;
+	title: string;
+	tagline: string;
+	category: string;
+	status: 'Complete' | 'Upcoming';
+	heroImage?: string;
+}
+
+const { slug, title, tagline, category, status, heroImage } = Astro.props;
+---
+
+<a class="card" href={`/projects/${slug}/`}>
+	<ProjectImage src={heroImage} alt={title} ratio="4 / 3" />
+	<div class="card-body">
+		<div class="card-meta">
+			<span class="tag">{category}</span>
+			{status === 'Upcoming' && <span class="tag status-upcoming">Upcoming</span>}
+		</div>
+		<h3>{title}</h3>
+		<p>{tagline}</p>
+	</div>
+</a>
+
+<style>
+	.card {
+		display: flex;
+		flex-direction: column;
+		border: 1px solid var(--border);
+		border-radius: 14px;
+		background: var(--bg-raised);
+		overflow: hidden;
+		transition:
+			transform 0.15s ease,
+			border-color 0.15s ease;
+	}
+	.card:hover {
+		transform: translateY(-3px);
+		border-color: var(--accent-dark);
+	}
+	.card :global(.img-slot) {
+		border-radius: 0;
+		border: none;
+		border-bottom: 1px solid var(--border);
+	}
+	.card-body {
+		padding: 1.1em 1.2em 1.3em 1.2em;
+	}
+	.card-meta {
+		display: flex;
+		gap: 0.5em;
+		margin-bottom: 0.7em;
+	}
+	.card h3 {
+		font-size: 1.15em;
+		margin-bottom: 0.35em;
+	}
+	.card p {
+		margin: 0;
+		font-size: 0.92em;
+		color: var(--muted);
+	}
+</style>

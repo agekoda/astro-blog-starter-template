@@ -1,0 +1,39 @@
+---
+// Renders an image if `src` is set and the file actually loads. If it's
+// missing (or no src was given at all), it falls back to a clean
+// "photo coming soon" placeholder instead of a broken-image icon.
+//
+// This means you can wire up `heroImage` / `gallery` paths in a project's
+// frontmatter ahead of time (see README) — nothing breaks until the photo
+// actually exists on disk.
+
+interface Props {
+	src?: string;
+	alt?: string;
+	ratio?: string; // aspect-ratio CSS value, e.g. "16 / 9"
+	label?: string;
+}
+
+const { src, alt = "", ratio = "16 / 9", label = "Photo coming soon" } = Astro.props;
+---
+
+<div class="img-slot" style={`aspect-ratio: ${ratio};`}>
+	{
+		src && (
+			<img
+				src={src}
+				alt={alt}
+				loading="lazy"
+				onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+			/>
+		)
+	}
+	<div class="placeholder" style={src ? "" : "display:flex;"}>
+		<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+			<rect x="3" y="5" width="18" height="14" rx="2" />
+			<circle cx="9" cy="10.5" r="1.75" />
+			<path d="M21 16.5l-5.5-5-3.5 3.5-2-2L3 18" />
+		</svg>
+		<span>{label}</span>
+	</div>
+</div>

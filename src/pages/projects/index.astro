@@ -1,0 +1,93 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+
+const allProjects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+
+const categoryOrder = ['RF & Wireless', 'Smart Home', 'Portable & Wearable', 'Game'] as const;
+const grouped = categoryOrder
+	.map((category) => ({
+		category,
+		items: allProjects.filter((p) => p.data.category === category),
+	}))
+	.filter((group) => group.items.length > 0);
+---
+
+<Layout
+	title="Projects — designedbykoda"
+	description="Custom PCBs, ESP32 hardware, and RF tools designed and built by Koda."
+>
+	<div class="intro">
+		<h1>Projects</h1>
+		<p>
+			Everything here is custom-designed: PCBs, enclosures, and firmware, built from scratch and
+			mostly funded through a couple of JLCPCB sponsorships. Tap into any project for the full
+			hardware breakdown.
+		</p>
+	</div>
+
+	{
+		grouped.map((group) => (
+			<section class="group">
+				<h2>{group.category}</h2>
+				<div class="grid">
+					{group.items.map((project) => (
+						<ProjectCard
+							slug={project.id}
+							title={project.data.title}
+							tagline={project.data.tagline}
+							category={project.data.category}
+							status={project.data.status}
+							heroImage={project.data.heroImage}
+						/>
+					))}
+				</div>
+			</section>
+		))
+	}
+
+	<section class="upcoming-note">
+		<h2>🔜 Also cooking</h2>
+		<p>Under-shelf smart lighting system, PWM controlled via Home Assistant.</p>
+	</section>
+</Layout>
+
+<style>
+	.intro {
+		max-width: 640px;
+		margin-bottom: 2.5em;
+	}
+	.intro p {
+		font-size: 1.05em;
+	}
+	.group {
+		margin-bottom: 3em;
+	}
+	.group h2 {
+		font-size: 1.2em;
+		color: var(--muted);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		font-weight: 400;
+		border-bottom: 1px solid var(--border);
+		padding-bottom: 0.6em;
+		margin-bottom: 1.3em;
+	}
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+		gap: 1.4em;
+	}
+	.upcoming-note {
+		border-top: 1px dashed var(--border);
+		padding-top: 2em;
+		margin-top: 1em;
+	}
+	.upcoming-note h2 {
+		font-size: 1.1em;
+	}
+	.upcoming-note p {
+		margin: 0;
+	}
+</style>

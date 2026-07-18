@@ -1,110 +1,115 @@
 ---
-// src/pages/index.astro
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { SITE_DESCRIPTION } from '../consts';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 ---
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Coming Soon</title>
-    <style>
-      html, body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-      }
-      body {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #0a0a0a;
-        background-image:
-          radial-gradient(circle, rgba(80, 160, 220, 0.35) 1px, transparent 1px);
-        background-size: 22px 22px;
-        color: #f5f5f5;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-      }
-      .glow {
-        position: absolute;
-        border-radius: 50%;
-        filter: blur(70px);
-        pointer-events: none;
-        z-index: 0;
-      }
-      .glow-blue {
-        width: 500px;
-        height: 500px;
-        top: -10%;
-        right: -5%;
-        background: radial-gradient(circle, rgba(60, 140, 220, 0.14), transparent 70%);
-      }
-      .glow-teal {
-        width: 400px;
-        height: 400px;
-        bottom: -10%;
-        left: 5%;
-        background: radial-gradient(circle, rgba(60, 200, 190, 0.12), transparent 70%);
-      }
-      .glow-pink {
-        width: 350px;
-        height: 350px;
-        top: 10%;
-        left: -8%;
-        background: radial-gradient(circle, rgba(230, 160, 200, 0.10), transparent 70%);
-      }
-      .glow-purple {
-        width: 380px;
-        height: 380px;
-        bottom: 5%;
-        right: 0%;
-        background: radial-gradient(circle, rgba(180, 150, 230, 0.10), transparent 70%);
-      }
-      .glow-center {
-        width: 420px;
-        height: 420px;
-        top: 30%;
-        left: 42%;
-        transform: translate(-50%, -50%);
-        background: radial-gradient(circle, rgba(160, 210, 230, 0.10), transparent 70%);
-      }
-      .container {
-        padding: 2rem;
-        position: relative;
-        z-index: 1;
-      }
-      h1 {
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
-        letter-spacing: -0.02em;
-      }
-      p {
-        color: #a3a3a3;
-        font-size: 1.1rem;
-        margin: 0;
-      }
-      .handle {
-        position: absolute;
-        bottom: 1.5rem;
-        right: 1.5rem;
-        color: #a3a3a3;
-        font-size: 1.1rem;
-        margin: 0;
-        z-index: 1;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="glow glow-blue"></div>
-    <div class="glow glow-teal"></div>
-    <div class="glow glow-pink"></div>
-    <div class="glow glow-purple"></div>
-    <div class="glow glow-center"></div>
-    <div class="container">
-      <h1>Coming Soon</h1>
-      <p>We're working on something. Check back shortly.</p>
-    </div>
-    <p class="handle">@designedbykoda</p>
-  </body>
-</html>
+
+<Layout title="designedbykoda" description={SITE_DESCRIPTION}>
+	<section class="hero">
+		<h1>Hi, I'm Koda 👋</h1>
+		<p>
+			16 and building things. Custom PCBs, ESP32 firmware, RF tools, and the occasional resin
+			enclosure that fits together better than it has any right to.
+		</p>
+		<div class="hero-links">
+			<a class="button" href="/projects">See all projects</a>
+			<a class="button ghost" href="/about">About me</a>
+		</div>
+	</section>
+
+	<section class="featured">
+		<div class="featured-heading">
+			<h2>Projects</h2>
+			<a href="/projects">View all &rarr;</a>
+		</div>
+		<div class="grid">
+			{
+				projects.map((project) => (
+					<ProjectCard
+						slug={project.id}
+						title={project.data.title}
+						tagline={project.data.tagline}
+						category={project.data.category}
+						status={project.data.status}
+						heroImage={project.data.heroImage}
+					/>
+				))
+			}
+		</div>
+	</section>
+</Layout>
+
+<style>
+	.hero {
+		text-align: center;
+		padding: 3em 0 4em 0;
+	}
+	.hero h1 {
+		font-size: 2.8em;
+		margin-bottom: 0.4em;
+	}
+	.hero p {
+		max-width: 560px;
+		margin: 0 auto 1.8em auto;
+		font-size: 1.1em;
+	}
+	.hero-links {
+		display: flex;
+		gap: 0.8em;
+		justify-content: center;
+	}
+	.button {
+		display: inline-block;
+		padding: 0.7em 1.4em;
+		border-radius: 999px;
+		background: var(--fg);
+		color: var(--bg);
+		font-weight: 700;
+		font-size: 0.95em;
+	}
+	.button:hover {
+		background: var(--accent);
+		color: var(--bg);
+	}
+	.button.ghost {
+		background: transparent;
+		color: var(--fg);
+		border: 1px solid var(--border);
+		font-weight: 400;
+	}
+	.button.ghost:hover {
+		border-color: var(--accent);
+		color: var(--fg);
+	}
+	.featured-heading {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		border-bottom: 1px solid var(--border);
+		padding-bottom: 0.6em;
+		margin-bottom: 1.5em;
+	}
+	.featured-heading h2 {
+		font-size: 1.4em;
+	}
+	.featured-heading a {
+		font-size: 0.9em;
+		color: var(--muted);
+	}
+	.featured-heading a:hover {
+		color: var(--fg);
+	}
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+		gap: 1.4em;
+	}
+	@media (max-width: 520px) {
+		.hero h1 {
+			font-size: 2.1em;
+		}
+	}
+</style>

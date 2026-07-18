@@ -1,64 +1,95 @@
-# Astro Starter Kit: Blog
+# designedbykoda
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/templates/tree/main/astro-blog-starter-template)
+Source for [designedbykoda.com](https://designedbykoda.com) — a portfolio of custom PCB / ESP32 hardware, RF tools, and other builds. Built with [Astro](https://astro.build) and deployed on Cloudflare Workers as a static site.
 
-![Astro Template Preview](https://github.com/withastro/astro/assets/2244813/ff10799f-a816-4703-b967-c78997e8323d)
+## Project structure
 
-<!-- dash-content-start -->
-
-Create a blog with Astro and deploy it on Cloudflare Workers as a [static website](https://developers.cloudflare.com/workers/static-assets/).
-
-Features:
-
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
-- ✅ Built-in Observability logging
-
-<!-- dash-content-end -->
-
-## Getting Started
-
-Outside of this repo, you can start a new project with this template using [C3](https://developers.cloudflare.com/pages/get-started/c3/) (the `create-cloudflare` CLI):
-
-```bash
-npm create cloudflare@latest -- --template=cloudflare/templates/astro-blog-starter-template
+```
+src/
+├── components/
+│   ├── BackgroundFX.astro     dotted-grid + glow background, used on every page
+│   ├── ProjectImage.astro     image with automatic "photo coming soon" placeholder
+│   ├── ProjectCard.astro      project preview card (used on home + /projects)
+│   ├── Header.astro / Footer.astro
+│   └── ...
+├── layouts/
+│   ├── Layout.astro           shared shell (head, header, background, footer)
+│   ├── ProjectLayout.astro    project detail page layout (hero, tags, gallery)
+│   └── BlogPost.astro         layout for the stock /blog demo pages
+├── content/
+│   ├── projects/              ← one .md file per project, shows up on the site
+│   └── blog/                  stock demo blog posts from the Astro starter
+├── pages/
+│   ├── index.astro            homepage — hero + full project grid
+│   ├── about.astro
+│   ├── projects/
+│   │   ├── index.astro        full project listing, grouped by category
+│   │   └── [...slug].astro    renders each project/*.md as its own page
+│   └── blog/                  stock demo blog (not linked in nav)
+└── styles/global.css          dark theme, shared across the whole site
 ```
 
-A live public deployment of this template is available at [https://astro-blog-starter-template.templates.workers.dev](https://astro-blog-starter-template.templates.workers.dev)
+## Adding a new project
 
-## 🚀 Project Structure
+Create a new file in `src/content/projects/`, e.g. `src/content/projects/my-new-thing.md`:
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+```md
+---
+title: "My New Thing"
+tagline: "One sentence describing it"
+description: "SEO/meta description, one or two sentences."
+category: "RF & Wireless" # or "Smart Home" | "Portable & Wearable" | "Game"
+status: "Complete" # or "Upcoming"
+order: 14 # controls sort order, lower = earlier
+heroImage: "/images/projects/my-new-thing/hero.jpg"
+gallery:
+  - "/images/projects/my-new-thing/1.jpg"
+  - "/images/projects/my-new-thing/2.jpg"
+---
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Intro paragraph about the project.
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+## Hardware
 
-Any static assets, like images, can be placed in the `public/` directory.
+- Part one
+- Part two
 
-## 🧞 Commands
+## Features
+
+- Thing it does
+- Another thing it does
+```
+
+That's it — it'll automatically show up on the homepage, the `/projects` listing (grouped under its `category`), and get its own page at `/projects/my-new-thing/`. Use `##` headings in the body for sections (Hardware, Features, Firmware, etc.) — they're styled automatically.
+
+## Adding photos
+
+Every project already has a matching folder under `public/images/projects/<slug>/` and its frontmatter already points at the expected file paths (`hero.jpg`, `1.jpg`, `2.jpg`, ...). Until those files exist, the site automatically shows a clean "Photo coming soon" placeholder instead of a broken image — nothing to configure.
+
+To add real photos:
+
+1. Drop image files into `public/images/projects/<slug>/`, matching the filenames already referenced in that project's frontmatter (or update the frontmatter paths if you'd rather rename them).
+2. That's it — no code changes needed. The placeholder swaps for the real photo automatically once the file resolves.
+
+Recommended: `.jpg` or `.webp`, roughly 1600px wide for hero images is plenty.
+
+## Commands
 
 All commands are run from the root of the project, from a terminal:
 
 | Command                           | Action                                           |
-| :-------------------------------- | :----------------------------------------------- |
-| `npm install`                     | Installs dependencies                            |
-| `npm run dev`                     | Starts local dev server at `localhost:4321`      |
-| `npm run build`                   | Build your production site to `./dist/`          |
-| `npm run preview`                 | Preview your build locally, before deploying     |
-| `npm run astro ...`               | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help`         | Get help using the Astro CLI                     |
-| `npm run build && npm run deploy` | Deploy your production site to Cloudflare        |
-| `npm wrangler tail`               | View real-time logs for all Workers              |
+| :--------------------------------- | :------------------------------------------------ |
+| `npm install`                      | Installs dependencies                             |
+| `npm run dev`                      | Starts local dev server at `localhost:4321`       |
+| `npm run build`                    | Builds the production site to `./dist/`           |
+| `npm run preview`                  | Preview the build locally via `wrangler dev`      |
+| `npm run check`                    | Type-checks + dry-run deploy check                |
+| `npm run deploy`                   | Deploy to Cloudflare Workers                       |
 
-## 👀 Want to learn more?
+## Deployment
 
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+This repo deploys to Cloudflare Workers via `wrangler`. Config lives in `wrangler.json`. If you've connected this repo to Cloudflare Pages/Workers for git-based deploys, pushing to the main branch will trigger a new deployment automatically — otherwise run `npm run deploy` locally.
 
 ## Credit
 
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+Originally scaffolded from the [Astro Blog Starter Template](https://github.com/withastro/astro/tree/main/examples/blog) / Cloudflare's Astro template, restyled and rebuilt as a project portfolio.

@@ -16,4 +16,22 @@ const blog = defineCollection({
 	}),
 });
 
-export const collections = { blog };
+const projects = defineCollection({
+	// Load Markdown and MDX files in the `src/content/projects/` directory.
+	loader: glob({ base: "./src/content/projects", pattern: "**/*.{md,mdx}" }),
+	schema: z.object({
+		title: z.string(),
+		tagline: z.string(),
+		description: z.string(),
+		category: z.enum(["RF & Wireless", "Smart Home", "Portable & Wearable", "Game"]),
+		status: z.enum(["Complete", "Upcoming"]).default("Complete"),
+		// Lower numbers show first.
+		order: z.number().default(99),
+		// These paths don't need to exist yet — the site falls back to a
+		// placeholder automatically until a matching file is added.
+		heroImage: z.string().optional(),
+		gallery: z.array(z.string()).default([]),
+	}),
+});
+
+export const collections = { blog, projects };
