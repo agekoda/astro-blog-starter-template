@@ -10,9 +10,19 @@ interface Props {
 	status: 'Complete' | 'Upcoming';
 	heroImage?: string;
 	gallery?: string[];
+	galleryRatio?: string;
 }
 
-const { title, tagline, description, category, status, heroImage, gallery = [] } = Astro.props;
+const {
+	title,
+	tagline,
+	description,
+	category,
+	status,
+	heroImage,
+	gallery = [],
+	galleryRatio = '4 / 3',
+} = Astro.props;
 ---
 
 <Layout title={`${title} — designedbykoda`} description={description} image={heroImage}>
@@ -37,7 +47,12 @@ const { title, tagline, description, category, status, heroImage, gallery = [] }
 		gallery.length > 0 && (
 			<div class="gallery">
 				{gallery.map((src) => (
-					<ProjectImage src={src} alt={`${title} photo`} ratio="4 / 3" label="Photo coming soon" />
+					<ProjectImage
+						src={src}
+						alt={`${title} photo`}
+						ratio={galleryRatio}
+						label="Photo coming soon"
+					/>
 				))}
 			</div>
 		)
